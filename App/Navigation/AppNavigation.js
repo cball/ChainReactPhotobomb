@@ -1,9 +1,11 @@
 import { StackNavigator } from 'react-navigation';
 import HomeScreen from '../Containers/HomeScreen';
+import PhotosScreen from '../Containers/PhotosScreen';
 
 const AppNavigation = StackNavigator(
   {
-    HomeScreen: { screen: HomeScreen }
+    HomeScreen: { screen: HomeScreen },
+    PhotosScreen: { screen: PhotosScreen }
   },
   {
     // Default config for all screens

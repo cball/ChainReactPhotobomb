@@ -4,6 +4,9 @@ import { ApplicationStyles, Colors, Fonts } from '../../Themes';
 export default StyleSheet.create({
   container: {
     backgroundColor: Colors.purple,
+    flex: 1
+  },
+  contentWrapper: {
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
@@ -45,5 +48,23 @@ export default StyleSheet.create({
   button: {
     fontSize: 24,
     color: Colors.white
+  },
+  cameraBar: {
+    backgroundColor: Colors.purple,
+    height: 30,
+    width: '100%',
+    marginTop: 'auto',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  cameraButton: {
+    backgroundColor: Colors.purple,
+    height: 80,
+    width: 80,
+    borderRadius: 80,
+    position: 'absolute',
+    bottom: -10,
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 });
