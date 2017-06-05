@@ -16,6 +16,7 @@ export default StyleSheet.create({
     color: Colors.white
   },
   backgroundImage: {
+    width: '100%',
     position: 'absolute',
     bottom: 0,
     left: 0,
@@ -31,11 +32,6 @@ export default StyleSheet.create({
   buttons: {
     marginTop: 40,
     flexDirection: 'row'
-  },
-  or: {
-    color: Colors.white,
-    alignItems: 'center',
-    justifyContent: 'center'
   },
   buttonContainer: {
     backgroundColor: Colors.red,
@@ -61,7 +57,7 @@ export default StyleSheet.create({
     backgroundColor: Colors.purple,
     height: 80,
     width: 80,
-    borderRadius: 80,
+    borderRadius: 8,
     position: 'absolute',
     bottom: -10,
     justifyContent: 'center',
