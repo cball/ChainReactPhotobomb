@@ -33,18 +33,6 @@ export default StyleSheet.create({
     marginTop: 40,
     flexDirection: 'row'
   },
-  buttonContainer: {
-    backgroundColor: Colors.red,
-    paddingTop: 8,
-    paddingBottom: 8,
-    paddingLeft: 16,
-    paddingRight: 16,
-    borderRadius: 2
-  },
-  button: {
-    fontSize: 24,
-    color: Colors.white
-  },
   cameraBar: {
     backgroundColor: Colors.purple,
     height: 30,

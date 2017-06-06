@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, StatusBar, Text, Image, TouchableOpacity } from 'react-native';
 import styles from './Styles/HomeScreenStyles';
 import { Images, Colors } from '../Themes';
+import Button from '../Components/Button';
 
 class HomeScreen extends Component {
   render() {
@@ -14,12 +15,10 @@ class HomeScreen extends Component {
           <Text style={styles.appName}>Photobomb!</Text>
 
           <View style={styles.buttons}>
-            <TouchableOpacity
-              style={styles.buttonContainer}
+            <Button
+              text="Photos"
               onPress={() => this.props.navigation.navigate('PhotosScreen')}
-            >
-              <Text style={styles.button}>Photos</Text>
-            </TouchableOpacity>
+            />
           </View>
         </View>
 

@@ -1,20 +1,26 @@
 import React, { Component } from 'react';
-import { View, StatusBar, Text, TouchableOpacity } from 'react-native';
+import {
+  View,
+  StatusBar,
+  Text,
+  TouchableOpacity,
+  Modal,
+  Image
+} from 'react-native';
 import Camera from 'react-native-camera';
 import CameraShutter from '../Components/CameraShutter';
+import Button from '../Components/Button';
 
 import styles from './Styles/CameraScreenStyles';
 
 class CameraScreen extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      camera: {
-        type: Camera.constants.Type.back
-      }
-    };
-  }
+  state = {
+    currentPicture: {},
+    isShowingPreview: false,
+    camera: {
+      type: Camera.constants.Type.back
+    }
+  };
 
   switchCameraType() {
     const { back, front } = Camera.constants.Type;
@@ -33,12 +39,22 @@ class CameraScreen extends Component {
     });
   }
 
-  takePicture() {
-    this.camera
-      .capture()
-      .then(data => console.log(data))
-      .catch(err => console.error(err));
+  async takePicture() {
+    let currentPicture;
+
+    try {
+      currentPicture = await this.camera.capture();
+    } catch (e) {
+      alert(e);
+      return;
+    }
+
+    this.setState({ currentPicture, isShowingPreview: true });
   }
+
+  closeImagePreview = () => {
+    this.setState({ isShowingPreview: false });
+  };
 
   render() {
     const { navigation } = this.props;
@@ -50,7 +66,7 @@ class CameraScreen extends Component {
           style={{ flex: 2, justifyContent: 'space-between', padding: 12 }}
           aspect={Camera.constants.Aspect.fill}
           type={this.state.camera.type}
-          captureTarget={Camera.constants.CaptureTarget.disk}
+          captureTarget={Camera.constants.CaptureTarget.temp}
         >
           <TouchableOpacity
             style={{ backgroundColor: 'transparent' }}
@@ -92,6 +108,26 @@ class CameraScreen extends Component {
             onPress={this.takePicture.bind(this)}
           />
         </View>
+
+        <Modal visible={this.state.isShowingPreview} onRequestClose={() => {}}>
+          {this.state.currentPicture.path &&
+            <View style={{ flex: 1 }}>
+              <TouchableOpacity onPress={this.closeImagePreview}>
+                <Text>X</Text>
+              </TouchableOpacity>
+              <Text style={{ fontSize: 20 }}>Choose a Rockin Frame</Text>
+              <View style={{ flex: 1 }}>
+                <Image
+                  style={{ height: '100%' }}
+                  source={{ uri: this.state.currentPicture.path }}
+                />
+              </View>
+              <View style={{ flex: 1, backgroundColor: 'green' }} />
+              <View style={{ padding: 10 }}>
+                <Button text="Do it" style={{ width: 100 }} />
+              </View>
+            </View>}
+        </Modal>
       </View>
     );
   }
