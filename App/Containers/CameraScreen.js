@@ -10,18 +10,29 @@ import {
 import Camera from 'react-native-camera';
 import CameraShutter from '../Components/CameraShutter';
 import Button from '../Components/Button';
-
 import styles from './Styles/CameraScreenStyles';
+
+// TODO: react-native-config
+const FILE_UPLOAD_API =
+  'https://api.graph.cool/file/v1/cj3g3v2hp18ag01621354vr2y';
 
 class CameraScreen extends Component {
   state = {
     currentPicture: {},
     isShowingPreview: false,
+    isUploading: false,
     camera: {
       type: Camera.constants.Type.back
     }
   };
 
+  defaultProps = {
+    camera: null
+  };
+
+  /**
+   * Switches between front <-> back cameras when taking a picture.
+   */
   switchCameraType() {
     const { back, front } = Camera.constants.Type;
 
@@ -39,6 +50,10 @@ class CameraScreen extends Component {
     });
   }
 
+  /**
+   * Takes a picture, sets currentPicture to the captured image, and shows 
+   * a preview of it.
+   */
   async takePicture() {
     let currentPicture;
 
@@ -52,9 +67,56 @@ class CameraScreen extends Component {
     this.setState({ currentPicture, isShowingPreview: true });
   }
 
-  closeImagePreview = () => {
+  /**
+   * Closes the preview modal.
+   */
+  closePreview = () => {
     this.setState({ isShowingPreview: false });
   };
+
+  /**
+   * Uploads the current picture to the API.
+   */
+  uploadPicture = async () => {
+    const { currentPicture } = this.state;
+    const pictureData = {
+      uri: currentPicture.path,
+      name: 'photo.jpg',
+      filename: 'photo.jpg',
+      type: 'image/jpg'
+    };
+
+    let formData = new FormData();
+
+    formData.append('data', pictureData);
+
+    /**
+     * NOTE: for upload to work right on Android platform, we MUST provide a
+     * boundry in the Content-Type header.
+     */
+    const fetchOptions = {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data; boundary=asdf'
+      },
+      body: formData
+    };
+    try {
+      this.setState({ isUploading: true });
+      const result = await fetch(FILE_UPLOAD_API, fetchOptions);
+      // TODO: create photo mutation w/ ref to file.
+      this.props.navigation.goBack();
+    } catch (e) {
+      alert(e);
+    } finally {
+      this.setState({ isUploading: false });
+    }
+  };
+
+  componentWillUnmount() {
+    this.camera = null;
+  }
 
   render() {
     const { navigation } = this.props;
@@ -67,6 +129,7 @@ class CameraScreen extends Component {
           aspect={Camera.constants.Aspect.fill}
           type={this.state.camera.type}
           captureTarget={Camera.constants.CaptureTarget.temp}
+          mirrorImage={false}
         >
           <TouchableOpacity
             style={{ backgroundColor: 'transparent' }}
@@ -112,10 +175,10 @@ class CameraScreen extends Component {
         <Modal visible={this.state.isShowingPreview} onRequestClose={() => {}}>
           {this.state.currentPicture.path &&
             <View style={{ flex: 1 }}>
-              <TouchableOpacity onPress={this.closeImagePreview}>
+              <TouchableOpacity onPress={this.closePreview}>
                 <Text>X</Text>
               </TouchableOpacity>
-              <Text style={{ fontSize: 20 }}>Choose a Rockin Frame</Text>
+              <Text style={{ fontSize: 24 }}>Choose a Rockin Frame</Text>
               <View style={{ flex: 1 }}>
                 <Image
                   style={{ height: '100%' }}
@@ -124,7 +187,13 @@ class CameraScreen extends Component {
               </View>
               <View style={{ flex: 1, backgroundColor: 'green' }} />
               <View style={{ padding: 10 }}>
-                <Button text="Do it" style={{ width: 100 }} />
+                <Button
+                  text={
+                    this.state.isUploading ? 'Uploading...' : "Let's Do This."
+                  }
+                  style={{ width: 100 }}
+                  onPress={this.uploadPicture}
+                />
               </View>
             </View>}
         </Modal>
