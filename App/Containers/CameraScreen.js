@@ -11,10 +11,23 @@ import Camera from 'react-native-camera';
 import CameraShutter from '../Components/CameraShutter';
 import Button from '../Components/Button';
 import styles from './Styles/CameraScreenStyles';
+import { gql, graphql } from 'react-apollo';
 
 // TODO: react-native-config
 const FILE_UPLOAD_API =
   'https://api.graph.cool/file/v1/cj3g3v2hp18ag01621354vr2y';
+
+const createPhoto = gql`
+ mutation createPhoto($fileId: ID!) {
+    createPhoto(fileId: $fileId) {
+      id
+      file {
+        id
+        url
+      }
+    }
+  }
+ `;
 
 class CameraScreen extends Component {
   state = {
@@ -105,7 +118,14 @@ class CameraScreen extends Component {
     try {
       this.setState({ isUploading: true });
       const result = await fetch(FILE_UPLOAD_API, fetchOptions);
-      // TODO: create photo mutation w/ ref to file.
+      const image = await result.json();
+
+      this.props.createPhoto({
+        variables: {
+          fileId: image.id
+        }
+      });
+
       this.props.navigation.goBack();
     } catch (e) {
       alert(e);
@@ -202,4 +222,8 @@ class CameraScreen extends Component {
   }
 }
 
-export default CameraScreen;
+const CameraScreenWithData = graphql(createPhoto, { name: 'createPhoto' })(
+  CameraScreen
+);
+
+export default CameraScreenWithData;
