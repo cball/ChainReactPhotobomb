@@ -120,7 +120,7 @@ class CameraScreen extends Component {
       const result = await fetch(FILE_UPLOAD_API, fetchOptions);
       const image = await result.json();
 
-      this.props.createPhoto({
+      await this.props.createPhoto({
         variables: {
           fileId: image.id
         }

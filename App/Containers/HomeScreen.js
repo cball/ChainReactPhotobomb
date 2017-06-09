@@ -1,7 +1,14 @@
 import React, { Component } from 'react';
-import { View, StatusBar, Text, Image, TouchableOpacity } from 'react-native';
+import {
+  View,
+  StatusBar,
+  Text,
+  Image,
+  TouchableOpacity,
+  FlatList
+} from 'react-native';
 import styles from './Styles/HomeScreenStyles';
-import { Images, Colors } from '../Themes';
+import { Images, Colors, Metrics } from '../Themes';
 import Button from '../Components/Button';
 import { gql, graphql } from 'react-apollo';
 
@@ -38,21 +45,18 @@ class HomeScreen extends Component {
   constructor(props) {
     super(props);
     this.subscription = null;
-    console.log('constructor');
   }
 
-  componentWillMount() {
-    console.log('will mount');
+  componentDidUpdate() {
+    console.log('bhaasdf');
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('will receive');
     if (this.props.subscriptionParam !== nextProps.subscriptionParam) {
       this.subscription.unsubscribe();
       this.subscription = null;
     }
 
-    debugger;
     if (!this.subscription && !nextProps.allPhotosQuery.loading) {
       this.subscription = nextProps.allPhotosQuery.subscribeToMore({
         document: photosSubscription,
@@ -110,25 +114,33 @@ class HomeScreen extends Component {
     }
 
     return (
-      <View
-        style={[
-          styles.contentWrapper,
-          { flexDirection: 'row', flexWrap: 'wrap' }
-        ]}
-      >
+      <View style={styles.contentWrapper}>
         <Image source={Images.portland} style={styles.backgroundImage} />
-        {allPhotos.map(p => {
-          return (
-            <Image
-              style={{ width: 100, height: 100 }}
-              key={p.id}
-              source={{
-                uri: `${p.file.url.replace('files', 'images')}/300x300`
-              }}
-            />
-          );
-        })}
+        <FlatList
+          numColumns="4"
+          refresh={() => {}}
+          refreshing={true}
+          contentContainerStyle={styles.photoList}
+          data={allPhotos}
+          renderItem={this.renderPhoto}
+          keyExtractor={item => item.id}
+        />
       </View>
+    );
+  }
+
+  renderPhoto({ item }) {
+    // TODO: move elsewhere so we dont recalc
+    const margin = 2;
+    const height = Metrics.screenWidth / 4 - margin * 3;
+    return (
+      <Image
+        style={{ width: height, height, margin }}
+        key={item.id}
+        source={{
+          uri: `${item.file.url.replace('files', 'images')}/300x300`
+        }}
+      />
     );
   }
 }

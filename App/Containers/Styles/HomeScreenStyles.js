@@ -50,5 +50,10 @@ export default StyleSheet.create({
     bottom: -10,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  photoList: {
+    // justifyContent: 'center'
+    // flexDirection: 'row',
+    // flexWrap: 'wrap'
   }
 });
