@@ -5,6 +5,7 @@ import {
   Text,
   Image,
   TouchableOpacity,
+  TouchableHighlight,
   FlatList
 } from 'react-native';
 import styles from './Styles/HomeScreenStyles';
@@ -79,14 +80,16 @@ class HomeScreen extends Component {
 
         {this.renderPhotos()}
 
-        <View style={styles.cameraBar}>
-          <Text
-            style={styles.button}
-            onPress={() => this.props.navigation.navigate('CameraScreen')}
-          >
+        <View style={styles.cameraBar} />
+        <TouchableHighlight
+          underlayColor={Colors.darkPurple}
+          style={styles.cameraButton}
+          onPress={() => this.props.navigation.navigate('CameraScreen')}
+        >
+          <Text style={{ color: '#fff', fontSize: 24 }}>
             [O]
           </Text>
-        </View>
+        </TouchableHighlight>
       </View>
     );
   }
@@ -118,8 +121,6 @@ class HomeScreen extends Component {
         <Image source={Images.portland} style={styles.backgroundImage} />
         <FlatList
           numColumns="4"
-          refresh={() => {}}
-          refreshing={true}
           contentContainerStyle={styles.photoList}
           data={allPhotos}
           renderItem={this.renderPhoto}

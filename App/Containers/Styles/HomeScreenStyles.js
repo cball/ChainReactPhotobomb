@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { ApplicationStyles, Colors, Fonts } from '../../Themes';
+import { ApplicationStyles, Colors, Fonts, Metrics } from '../../Themes';
 
 export default StyleSheet.create({
   container: {
@@ -35,25 +35,23 @@ export default StyleSheet.create({
   },
   cameraBar: {
     backgroundColor: Colors.purple,
-    height: 30,
+    height: 40,
     width: '100%',
     marginTop: 'auto',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    borderTopColor: Colors.darkPurple,
+    borderTopWidth: 2
   },
   cameraButton: {
     backgroundColor: Colors.purple,
-    height: 80,
-    width: 80,
-    borderRadius: 8,
+    height: 64,
+    width: 64,
+    borderRadius: 32,
     position: 'absolute',
-    bottom: -10,
+    bottom: -9,
+    left: Metrics.screenWidth / 2 - 30,
     justifyContent: 'center',
     alignItems: 'center'
-  },
-  photoList: {
-    // justifyContent: 'center'
-    // flexDirection: 'row',
-    // flexWrap: 'wrap'
   }
 });
