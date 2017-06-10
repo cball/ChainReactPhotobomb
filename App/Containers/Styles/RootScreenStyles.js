@@ -1,8 +1,16 @@
-import { StyleSheet } from 'react-native';
-import { ApplicationStyles } from '../../Themes';
+import { StyleSheet, Platform } from 'react-native';
+import { ApplicationStyles, Colors } from '../../Themes';
+
+const platformStyles = Platform.select({
+  ios: {
+    paddingTop: 20
+  }
+});
 
 export default StyleSheet.create({
   container: {
-    ...ApplicationStyles.mainContainer
+    ...ApplicationStyles.mainContainer,
+    ...platformStyles,
+    backgroundColor: Colors.purple
   }
 });
