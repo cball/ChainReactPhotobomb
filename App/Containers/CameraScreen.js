@@ -222,8 +222,4 @@ class CameraScreen extends Component {
   }
 }
 
-const CameraScreenWithData = graphql(createPhoto, { name: 'createPhoto' })(
-  CameraScreen
-);
-
-export default CameraScreenWithData;
+export default graphql(createPhoto, { name: 'createPhoto' })(CameraScreen);

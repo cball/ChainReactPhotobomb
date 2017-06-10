@@ -42,34 +42,36 @@ const photosSubscription = gql`
   }
 `;
 
+const PHOTO_MARGIN = 2;
+const PHOTO_SIZE = Metrics.screenWidth / 4 - PHOTO_MARGIN * 3;
+
 class HomeScreen extends Component {
   constructor(props) {
     super(props);
     this.subscription = null;
   }
 
-  componentDidUpdate() {
-    console.log('bhaasdf');
+  componentWillReceiveProps(nextProps) {
+    this._subscribeToNewPhotos(nextProps);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.subscriptionParam !== nextProps.subscriptionParam) {
-      this.subscription.unsubscribe();
-      this.subscription = null;
-    }
+  _subscribeToNewPhotos(nextProps) {
+    this._unsubscribeIfPropsChanged(nextProps);
 
     if (!this.subscription && !nextProps.allPhotosQuery.loading) {
       this.subscription = nextProps.allPhotosQuery.subscribeToMore({
         document: photosSubscription,
-        updateQuery: (previousState, { subscriptionData }) => {
-          const newPhoto = subscriptionData.data.Photo.node;
-          const allPhotos = [newPhoto, ...previousState.allPhotos];
-
-          return {
-            allPhotos
-          };
-        }
+        updateQuery: prependNewPhotos
       });
+    }
+  }
+
+  _unsubscribeIfPropsChanged(nextProps) {
+    if (!this.subscription) return;
+
+    if (this.props.subscriptionParam !== nextProps.subscriptionParam) {
+      this.subscription.unsubscribe();
+      this.subscription = null;
     }
   }
 
@@ -80,6 +82,7 @@ class HomeScreen extends Component {
         {this.renderPhotos()}
 
         <View style={styles.cameraBar} />
+
         <TouchableHighlight
           underlayColor={Colors.darkPurple}
           style={styles.cameraButton}
@@ -130,22 +133,25 @@ class HomeScreen extends Component {
   }
 
   renderPhoto({ item }) {
-    // TODO: move elsewhere so we dont recalc
-    const margin = 2;
-    const height = Metrics.screenWidth / 4 - margin * 3;
+    const uri = `${item.file.url.replace('files', 'images')}/300x300`;
+
     return (
       <Image
-        style={{ width: height, height, margin }}
         key={item.id}
-        source={{
-          uri: `${item.file.url.replace('files', 'images')}/300x300`
-        }}
+        source={{ uri }}
+        style={{ width: PHOTO_SIZE, height: PHOTO_SIZE, margin: PHOTO_MARGIN }}
       />
     );
   }
 }
 
-const HomeScreenWithData = graphql(allPhotosQuery, { name: 'allPhotosQuery' })(
-  HomeScreen
-);
-export default HomeScreenWithData;
+const prependNewPhotos = (previousState, { subscriptionData }) => {
+  const newPhoto = subscriptionData.data.Photo.node;
+  const allPhotos = [newPhoto, ...previousState.allPhotos];
+
+  return {
+    allPhotos
+  };
+};
+
+export default graphql(allPhotosQuery, { name: 'allPhotosQuery' })(HomeScreen);
