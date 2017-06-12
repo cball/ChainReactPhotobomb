@@ -12,10 +12,7 @@ import Camera from '../Components/Camera';
 import Button from '../Components/Button';
 import styles from './Styles/CameraScreenStyles';
 import { gql, graphql } from 'react-apollo';
-
-// TODO: react-native-config
-const FILE_UPLOAD_API =
-  'https://api.graph.cool/file/v1/cj3g3v2hp18ag01621354vr2y';
+import uploadPhoto from '../Services/PhotoUpload';
 
 const createPhoto = gql`
  mutation createPhoto($fileId: ID!) {
@@ -48,33 +45,10 @@ class CameraScreen extends Component {
    */
   uploadPicture = async () => {
     const { currentPicture } = this.state;
-    const pictureData = {
-      uri: currentPicture.path,
-      name: 'photo.jpg',
-      filename: 'photo.jpg',
-      type: 'image/jpg'
-    };
 
-    let formData = new FormData();
-
-    formData.append('data', pictureData);
-
-    /**
-     * NOTE: for upload to work right on Android platform, we MUST provide a
-     * boundry in the Content-Type header.
-     */
-    const fetchOptions = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'multipart/form-data; boundary=asdf'
-      },
-      body: formData
-    };
     try {
+      const image = await uploadPhoto(currentPicture);
       this.setState({ isUploading: true });
-      const result = await fetch(FILE_UPLOAD_API, fetchOptions);
-      const image = await result.json();
 
       await this.props.createPhoto({
         variables: {
