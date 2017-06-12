@@ -22,7 +22,7 @@ class Camera extends Component {
   /**
    * Switches between front <-> back cameras when taking a picture.
    */
-  switchCameraType() {
+  switchCameraType = () => {
     let newType;
 
     if (this.state.type === 'back') {
@@ -34,7 +34,7 @@ class Camera extends Component {
     this.setState({
       type: newType
     });
-  }
+  };
 
   /**
    * Takes a picture, sets currentPicture to the captured image, and shows 
@@ -53,83 +53,50 @@ class Camera extends Component {
     this.props.onPicture(currentPicture);
   }
 
-  renderPlatformCamera() {
-    return Platform.select({
-      ios: this.renderCamera(),
-      android: this.renderAndroidCamera()
-    });
-  }
-
-  renderCamera() {
-    const type = ReactNativeCamera.constants.Type[this.state.type];
-    const captureTarget = ReactNativeCamera.constants.CaptureTarget.temp;
-
-    return (
-      <ReactNativeCamera
-        ref={instance => (this.camera = instance)}
-        style={ApplicationStyles.fullScreen}
-        type={type}
-        captureTarget={captureTarget}
-      />
-    );
-  }
-
-  renderAndroidCamera() {
-    return (
-      <AndroidCamera
-        ref={instance => (this.camera = instance)}
-        style={ApplicationStyles.fullScreen}
-        type={this.state.type}
-      />
-    );
-  }
-
   render() {
     return (
-      <View style={{ backgroundColor: 'black', flex: 2 }}>
+      <View style={styles.cameraContainer}>
         <CameraBase
           ref={instance => (this.camera = instance)}
           type={this.state.type}
         />
-        <View
-          style={[
-            ...ApplicationStyles.fullScreen,
-            {
-              justifyContent: 'space-between',
-              padding: 12
-            }
-          ]}
-        >
-          <TouchableOpacity
-            style={{ backgroundColor: 'transparent' }}
-            onPress={this.props.onClose}
-          >
-            <Text style={{ color: 'white' }}>[BACK]</Text>
+        <View style={styles.cameraControls}>
+          <TouchableOpacity onPress={this.props.onClose}>
+            <Text style={styles.cameraControl}>[BACK]</Text>
           </TouchableOpacity>
 
-          <View
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
-          >
-            <Text
-              style={{ color: 'white', backgroundColor: 'transparent' }}
-              onPress={this.switchCameraType.bind(this)}
-            >
+          <View style={styles.cameraControlBottom}>
+            <Text style={styles.cameraControl} onPress={this.switchCameraType}>
               [SWITCH]
             </Text>
-            <Text
-              style={{ color: 'white', backgroundColor: 'transparent' }}
-              onPress={() => {}}
-            >
+            <Text style={styles.cameraControl} onPress={() => {}}>
               [FLASH]
             </Text>
           </View>
         </View>
-
       </View>
     );
   }
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  cameraContainer: {
+    backgroundColor: 'black',
+    flex: 2
+  },
+  cameraControls: {
+    ...ApplicationStyles.fullScreen,
+    justifyContent: 'space-between',
+    padding: 12
+  },
+  cameraControl: {
+    color: 'white',
+    backgroundColor: 'transparent'
+  },
+  cameraControlBottom: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  }
+});
 
 export default Camera;
