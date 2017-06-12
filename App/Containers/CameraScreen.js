@@ -7,8 +7,8 @@ import {
   Modal,
   Image
 } from 'react-native';
-import Camera from 'react-native-camera';
-import CameraShutter from '../Components/CameraShutter';
+import ReactNativeCamera from 'react-native-camera';
+import Camera from '../Components/Camera';
 import Button from '../Components/Button';
 import styles from './Styles/CameraScreenStyles';
 import { gql, graphql } from 'react-apollo';
@@ -33,52 +33,8 @@ class CameraScreen extends Component {
   state = {
     currentPicture: {},
     isShowingPreview: false,
-    isUploading: false,
-    camera: {
-      type: Camera.constants.Type.back
-    }
+    isUploading: false
   };
-
-  defaultProps = {
-    camera: null
-  };
-
-  /**
-   * Switches between front <-> back cameras when taking a picture.
-   */
-  switchCameraType() {
-    const { back, front } = Camera.constants.Type;
-
-    if (this.state.camera.type === back) {
-      newType = front;
-    } else if (this.state.camera.type === front) {
-      newType = back;
-    }
-
-    this.setState({
-      camera: {
-        ...this.state.camera,
-        type: newType
-      }
-    });
-  }
-
-  /**
-   * Takes a picture, sets currentPicture to the captured image, and shows 
-   * a preview of it.
-   */
-  async takePicture() {
-    let currentPicture;
-
-    try {
-      currentPicture = await this.camera.capture();
-    } catch (e) {
-      alert(e);
-      return;
-    }
-
-    this.setState({ currentPicture, isShowingPreview: true });
-  }
 
   /**
    * Closes the preview modal.
@@ -138,6 +94,14 @@ class CameraScreen extends Component {
     this.camera = null;
   }
 
+  setCurrentPicture = currentPicture => {
+    this.setState({ currentPicture, isShowingPreview: true });
+  };
+
+  takePicture = () => {
+    this.camera.takePicture();
+  };
+
   render() {
     const { navigation } = this.props;
 
@@ -145,50 +109,13 @@ class CameraScreen extends Component {
       <View style={styles.container}>
         <Camera
           ref={cam => (this.camera = cam)}
-          style={{ flex: 2, justifyContent: 'space-between', padding: 12 }}
-          aspect={Camera.constants.Aspect.fill}
-          type={this.state.camera.type}
-          captureTarget={Camera.constants.CaptureTarget.temp}
-          mirrorImage={false}
-        >
-          <TouchableOpacity
-            style={{ backgroundColor: 'transparent' }}
-            onPress={() => navigation.goBack()}
-          >
-            <Text style={{ color: 'white' }}>[BACK]</Text>
-          </TouchableOpacity>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between'
-            }}
-          >
-            <Text
-              style={{ color: 'white', backgroundColor: 'transparent' }}
-              onPress={this.switchCameraType.bind(this)}
-            >
-              [SWITCH]
-            </Text>
-            <Text
-              style={{ color: 'white', backgroundColor: 'transparent' }}
-              onPress={() => {}}
-            >
-              [FLASH]
-            </Text>
-          </View>
-        </Camera>
-
-        <View
-          style={{
-            backgroundColor: 'white',
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-        >
+          onPicture={this.setCurrentPicture}
+          onClose={() => this.props.navigation.goBack()}
+        />
+        <View style={styles.shutterControls}>
           <TouchableOpacity
             style={styles.cameraShutter}
-            onPress={this.takePicture.bind(this)}
+            onPress={this.takePicture}
           />
         </View>
 

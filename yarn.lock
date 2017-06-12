@@ -3425,7 +3425,7 @@ promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@^15.5.10, prop-types@^15.5.6, prop-types@^15.5.8:
+prop-types@^15.5.10, prop-types@^15.5.6, prop-types@^15.5.7, prop-types@^15.5.8:
   version "15.5.10"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.5.10.tgz#2797dfc3126182e3a95e3dfbb2e893ddd7456154"
   dependencies:
@@ -3517,6 +3517,13 @@ react-devtools-core@^2.0.8:
     object-assign "^4.1.0"
     prop-types "^15.5.6"
 
+react-native-camera-android-simple@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/react-native-camera-android-simple/-/react-native-camera-android-simple-1.0.3.tgz#1aa4569e7d28113fb531466da52020991c1e5a6d"
+  dependencies:
+    react ">=15.4.0"
+    react-native ">=0.40"
+
 "react-native-camera@https://github.com/lwansbrough/react-native-camera.git":
   version "0.9.0"
   resolved "https://github.com/lwansbrough/react-native-camera.git#acc60d3cf89cdc04f387514909f24592f93dccc5"
@@ -3545,7 +3552,7 @@ react-native-tab-view@^0.0.65:
   dependencies:
     prop-types "^15.5.8"
 
-react-native@0.44.2:
+react-native@0.44.2, react-native@>=0.40:
   version "0.44.2"
   resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.44.2.tgz#c8dfb747b88e6276a991980c57c50b860a98cf0e"
   dependencies:
@@ -3675,6 +3682,15 @@ react@16.0.0-alpha.6:
     fbjs "^0.8.9"
     loose-envify "^1.1.0"
     object-assign "^4.1.0"
+
+react@>=15.4.0:
+  version "15.5.4"
+  resolved "https://registry.yarnpkg.com/react/-/react-15.5.4.tgz#fa83eb01506ab237cdc1c8c3b1cea8de012bf047"
+  dependencies:
+    fbjs "^0.8.9"
+    loose-envify "^1.1.0"
+    object-assign "^4.1.0"
+    prop-types "^15.5.7"
 
 read-pkg-up@^1.0.1:
   version "1.0.1"

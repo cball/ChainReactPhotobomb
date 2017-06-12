@@ -13,5 +13,11 @@ export default StyleSheet.create({
     borderRadius: 40,
     borderColor: '#ccc',
     borderWidth: 10
+  },
+  shutterControls: {
+    backgroundColor: 'white',
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
   }
 });
