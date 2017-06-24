@@ -9,35 +9,57 @@ class TransformableImage extends Component {
   };
 
   componentWillMount() {
-    this._panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
+    this._panResponder = createResponder({
+      onStartShouldSetResponder: () => true,
+      onStartShouldSetResponderCapture: () => true,
+      onMoveShouldSetResponder: () => true,
+      onMoveShouldSetResponderCapture: () => true,
+      onResponderTerminationRequest: () => false,
 
-      onPanResponderGrant: () => {
+      onResponderGrant: () => {
         this._setInitialPosition();
         this._animateIn();
       },
 
-      onPanResponderMove: Animated.event([
-        null,
-        {
-          dx: this.state.pan.x,
-          dy: this.state.pan.y
+      onResponderMove: (evt, gestureState) => {
+        if (gestureState.pinch) {
+          return this._processPinch.call(this, evt, gestureState);
         }
-      ]),
 
-      onPanResponderRelease: () => {
-        // prevent jumpiness the next time we drag
+        this._processTouch.call(this, evt, gestureState);
+      },
+
+      onResponderRelease: (evt, gestureState) => {
         this.state.pan.flattenOffset();
-        this._animateBack();
-      }
+        if (!gestureState.pinch) this._animateBack();
+      },
+      onResponderTerminate: (evt, gestureState) => {},
+
+      debug: false
     });
 
     this._animateBack();
   }
 
+  _processTouch = Animated.event([
+    null,
+    {
+      dx: this.state.pan.x,
+      dy: this.state.pan.y
+    }
+  ]);
+
+  _processPinch = (event, gestureState) => {
+    console.log('pinch');
+    const { pinch, previousPinch } = gestureState;
+    const currentScale = this.state.scale._value;
+    const scaleAmount = pinch / previousPinch;
+    this.state.scale.setValue(currentScale * scaleAmount);
+  };
+
   _animateBack() {
     const options = {
-      toValue: 1,
+      toValue: this.state.scale._value - 0.05,
       friction: 3
     };
 
@@ -46,7 +68,7 @@ class TransformableImage extends Component {
 
   _animateIn() {
     const options = {
-      toValue: 1.05,
+      toValue: this.state.scale._value + 0.05,
       friction: 3
     };
 
@@ -72,7 +94,7 @@ class TransformableImage extends Component {
     return (
       <Animated.View
         style={[styles.container, { transform }]}
-        {...this._panResponder.panHandlers}
+        {...this._panResponder}
       >
         {this.props.children}
       </Animated.View>
