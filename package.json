@@ -12,6 +12,9 @@
 		"react-native": "0.44.2",
 		"react-native-camera": "https://github.com/lwansbrough/react-native-camera.git",
 		"react-native-camera-android-simple": "^1.0.3",
+		"react-native-gesture-responder": "^0.1.1",
+		"react-native-image-pan-zoom": "^2.0.4",
+		"react-native-transformable-image": "^0.0.18",
 		"react-navigation": "^1.0.0-beta.11",
 		"subscriptions-transport-ws": "^0.6.0"
 	},

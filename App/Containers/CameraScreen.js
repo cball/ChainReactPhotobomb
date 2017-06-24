@@ -5,7 +5,9 @@ import {
   Text,
   TouchableOpacity,
   Modal,
-  Image
+  Image,
+  PanResponder,
+  Dimensions
 } from 'react-native';
 import ReactNativeCamera from 'react-native-camera';
 import Camera from '../Components/Camera';
@@ -13,24 +15,15 @@ import Button from '../Components/Button';
 import styles from './Styles/CameraScreenStyles';
 import { gql, graphql } from 'react-apollo';
 import uploadPhoto from '../Services/PhotoUpload';
-
-const createPhoto = gql`
- mutation createPhoto($fileId: ID!) {
-    createPhoto(fileId: $fileId) {
-      id
-      file {
-        id
-        url
-      }
-    }
-  }
- `;
+import PropPicker from '../Components/PropPicker';
+import TransformableImage from '../Components/TransformableImage';
 
 class CameraScreen extends Component {
   state = {
     currentPicture: {},
     isShowingPreview: false,
-    isUploading: false
+    isUploading: false,
+    propImages: []
   };
 
   /**
@@ -76,6 +69,24 @@ class CameraScreen extends Component {
     this.camera.takePicture();
   };
 
+  addPropToPicture = propImage => {
+    const propImages = [...this.state.propImages, propImage];
+
+    this.setState({ propImages });
+  };
+
+  renderPropImages = () => {
+    return this.state.propImages.map((propImage, index) => {
+      const key = `${propImage}-${index}`;
+
+      return (
+        <TransformableImage key={key}>
+          <Image source={propImage} resizeMode="cover" />
+        </TransformableImage>
+      );
+    });
+  };
+
   render() {
     const { navigation } = this.props;
 
@@ -104,9 +115,13 @@ class CameraScreen extends Component {
                 <Image
                   style={{ height: '100%' }}
                   source={{ uri: this.state.currentPicture.path }}
-                />
+                >
+                  {this.renderPropImages()}
+                </Image>
               </View>
-              <View style={{ flex: 1, backgroundColor: 'green' }} />
+
+              <PropPicker onPickProp={this.addPropToPicture} />
+
               <View style={{ padding: 10 }}>
                 <Button
                   text={
@@ -122,5 +137,17 @@ class CameraScreen extends Component {
     );
   }
 }
+
+const createPhoto = gql`
+ mutation createPhoto($fileId: ID!) {
+    createPhoto(fileId: $fileId) {
+      id
+      file {
+        id
+        url
+      }
+    }
+  }
+ `;
 
 export default graphql(createPhoto, { name: 'createPhoto' })(CameraScreen);
