@@ -46,6 +46,10 @@ const PHOTO_MARGIN = 2;
 const PHOTO_SIZE = Metrics.screenWidth / 4 - PHOTO_MARGIN * 3;
 
 class HomeScreen extends Component {
+  state = {
+    refreshing: false
+  };
+
   constructor(props) {
     super(props);
     this.subscription = null;
@@ -55,24 +59,66 @@ class HomeScreen extends Component {
     this._subscribeToNewPhotos(nextProps);
   }
 
-  _subscribeToNewPhotos(nextProps) {
-    this._unsubscribeIfPropsChanged(nextProps);
+  refreshCollection = async () => {
+    this.setState({ refreshing: true });
+    await this.props.allPhotosQuery.refetch();
+    this.setState({ refreshing: false });
+  };
 
-    if (!this.subscription && !nextProps.allPhotosQuery.loading) {
-      this.subscription = nextProps.allPhotosQuery.subscribeToMore({
-        document: photosSubscription,
-        updateQuery: prependNewPhotos
-      });
+  renderPhotos() {
+    let { loading, error, allPhotos } = this.props.allPhotosQuery;
+    let { refreshing } = this.state;
+
+    // TODO: move this to a non-intrusive banner
+    if (error) {
+      return (
+        <View style={styles.contentWrapper}>
+          <Image source={Images.portland} style={styles.backgroundImage} />
+          <Text>ERR>R</Text>
+        </View>
+      );
     }
+
+    if (loading && !refreshing) {
+      return (
+        <View style={styles.contentWrapper}>
+          <Image source={Images.portland} style={styles.backgroundImage} />
+          <Image source={Images.logo} style={styles.logo} />
+          <Text style={styles.appName}>Photobomb!</Text>
+        </View>
+      );
+    }
+
+    // TODO: this delays things just enough to show a recently taken photo.
+    // find a better workaround.
+    console.log(allPhotos.length);
+
+    return (
+      <View style={styles.contentWrapper}>
+        <Image source={Images.portland} style={styles.backgroundImage} />
+        <FlatList
+          numColumns="4"
+          contentContainerStyle={styles.photoList}
+          data={allPhotos}
+          renderItem={this.renderPhoto}
+          keyExtractor={item => item.id}
+          onRefresh={this.refreshCollection}
+          refreshing={refreshing}
+        />
+      </View>
+    );
   }
 
-  _unsubscribeIfPropsChanged(nextProps) {
-    if (!this.subscription) return;
+  renderPhoto({ item }) {
+    const uri = `${item.file.url.replace('files', 'images')}/300x300`;
 
-    if (this.props.subscriptionParam !== nextProps.subscriptionParam) {
-      this.subscription.unsubscribe();
-      this.subscription = null;
-    }
+    return (
+      <Image
+        key={item.id}
+        source={{ uri }}
+        style={{ width: PHOTO_SIZE, height: PHOTO_SIZE, margin: PHOTO_MARGIN }}
+      />
+    );
   }
 
   render() {
@@ -96,52 +142,24 @@ class HomeScreen extends Component {
     );
   }
 
-  renderPhotos() {
-    let { loading, error, allPhotos } = this.props.allPhotosQuery;
+  _subscribeToNewPhotos(nextProps) {
+    this._unsubscribeIfPropsChanged(nextProps);
 
-    if (error) {
-      return (
-        <View style={styles.contentWrapper}>
-          <Image source={Images.portland} style={styles.backgroundImage} />
-          <Text>ERR>R</Text>
-        </View>
-      );
+    if (!this.subscription && !nextProps.allPhotosQuery.loading) {
+      this.subscription = nextProps.allPhotosQuery.subscribeToMore({
+        document: photosSubscription,
+        updateQuery: prependNewPhotos
+      });
     }
-
-    if (loading) {
-      return (
-        <View style={styles.contentWrapper}>
-          <Image source={Images.portland} style={styles.backgroundImage} />
-          <Image source={Images.logo} style={styles.logo} />
-          <Text style={styles.appName}>Photobomb!</Text>
-        </View>
-      );
-    }
-
-    return (
-      <View style={styles.contentWrapper}>
-        <Image source={Images.portland} style={styles.backgroundImage} />
-        <FlatList
-          numColumns="4"
-          contentContainerStyle={styles.photoList}
-          data={allPhotos}
-          renderItem={this.renderPhoto}
-          keyExtractor={item => item.id}
-        />
-      </View>
-    );
   }
 
-  renderPhoto({ item }) {
-    const uri = `${item.file.url.replace('files', 'images')}/300x300`;
+  _unsubscribeIfPropsChanged(nextProps) {
+    if (!this.subscription) return;
 
-    return (
-      <Image
-        key={item.id}
-        source={{ uri }}
-        style={{ width: PHOTO_SIZE, height: PHOTO_SIZE, margin: PHOTO_MARGIN }}
-      />
-    );
+    if (this.props.subscriptionParam !== nextProps.subscriptionParam) {
+      this.subscription.unsubscribe();
+      this.subscription = null;
+    }
   }
 }
 
