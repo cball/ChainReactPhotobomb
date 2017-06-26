@@ -17,6 +17,8 @@ import { gql, graphql } from 'react-apollo';
 import uploadPhoto from '../Services/PhotoUpload';
 import PropPicker from '../Components/PropPicker';
 import TransformableImage from '../Components/TransformableImage';
+import { takeSnapshot } from 'react-native-view-shot';
+import { Colors } from '../Themes';
 
 class CameraScreen extends Component {
   state = {
@@ -34,14 +36,34 @@ class CameraScreen extends Component {
   };
 
   /**
+   * Composes the picture and props as a single image.
+   */
+  createCompositePicture = async () => {
+    const { currentPicture } = this.state;
+
+    try {
+      const path = await takeSnapshot(this.imageComponent, {
+        format: 'jpeg',
+        quality: 1
+      });
+
+      return { path };
+    } catch (e) {
+      console.error('Oops, snapshot failed. using photo without props', error);
+    }
+  };
+
+  /**
    * Uploads the current picture to the API.
    */
   uploadPicture = async () => {
     const { currentPicture } = this.state;
+    this.setState({ isUploading: true });
+
+    const compositePicture = await this.createCompositePicture();
 
     try {
-      const image = await uploadPhoto(currentPicture);
-      this.setState({ isUploading: true });
+      const image = await uploadPhoto(compositePicture || currentPicture);
 
       await this.props.createPhoto({
         variables: {
@@ -59,6 +81,7 @@ class CameraScreen extends Component {
 
   componentWillUnmount() {
     this.camera = null;
+    this.imageComponent = null;
   }
 
   setCurrentPicture = currentPicture => {
@@ -106,12 +129,12 @@ class CameraScreen extends Component {
 
         <Modal visible={this.state.isShowingPreview} onRequestClose={() => {}}>
           {this.state.currentPicture.path &&
-            <View style={{ flex: 1 }}>
-              <TouchableOpacity onPress={this.closePreview}>
-                <Text>X</Text>
-              </TouchableOpacity>
-              <Text style={{ fontSize: 24 }}>Choose a Rockin Frame</Text>
-              <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, backgroundColor: Colors.darkPurple }}>
+              <View
+                style={{ flex: 2 }}
+                collapsable={false}
+                ref={i => (this.imageComponent = i)}
+              >
                 <Image
                   style={{ height: '100%' }}
                   source={{ uri: this.state.currentPicture.path }}
@@ -119,18 +142,26 @@ class CameraScreen extends Component {
                   {this.renderPropImages()}
                 </Image>
               </View>
+              <View style={{ height: 160 }}>
+                <Text style={styles.addPropText}>
+                  Add props to your image!
+                </Text>
 
-              <PropPicker onPickProp={this.addPropToPicture} />
+                <PropPicker onPickProp={this.addPropToPicture} />
+              </View>
 
-              <View style={{ padding: 10 }}>
+              <View style={styles.uploadButtonContainer}>
                 <Button
-                  text={
-                    this.state.isUploading ? 'Uploading...' : "Let's Do This."
-                  }
-                  style={{ width: 100 }}
+                  text={this.state.isUploading ? 'Uploading...' : 'Upload'}
                   onPress={this.uploadPicture}
                 />
               </View>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={this.closePreview}
+              >
+                <Text style={styles.closeButtonText}>[Back]</Text>
+              </TouchableOpacity>
             </View>}
         </Modal>
       </View>

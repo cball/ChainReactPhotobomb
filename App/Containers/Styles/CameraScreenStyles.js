@@ -16,8 +16,27 @@ export default StyleSheet.create({
   },
   shutterControls: {
     backgroundColor: 'white',
-    flex: 1,
+    height: '25%',
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  addPropText: {
+    fontSize: 18,
+    color: 'white',
+    paddingHorizontal: 10,
+    paddingTop: 20,
+    paddingBottom: 0
+  },
+  uploadButtonContainer: {
+    padding: 10
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 20,
+    left: 10,
+    backgroundColor: Colors.transparent
+  },
+  closeButtonText: {
+    color: Colors.white
   }
 });
