@@ -50,7 +50,6 @@ class TransformableImage extends Component {
   ]);
 
   _processPinch = (event, gestureState) => {
-    console.log('pinch');
     const { pinch, previousPinch } = gestureState;
     const currentScale = this.state.scale._value;
     const scaleAmount = pinch / previousPinch;
@@ -93,7 +92,7 @@ class TransformableImage extends Component {
 
     return (
       <Animated.View
-        style={[styles.container, { transform }]}
+        style={[styles.container, this.props.style, { transform }]}
         {...this._panResponder}
       >
         {this.props.children}

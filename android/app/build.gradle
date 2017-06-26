@@ -137,6 +137,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-view-shot')
     compile project(':react-native-camera-android-simple')
     compile project(':react-native-camera')
     compile fileTree(dir: "libs", include: ["*.jar"])
