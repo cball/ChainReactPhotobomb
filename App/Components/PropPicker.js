@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import { Colors, Images } from '../Themes';
-import { TouchableOpacity, Image, ScrollView, StyleSheet } from 'react-native';
+import { TouchableOpacity, Image, FlatList, StyleSheet } from 'react-native';
 
 class PropPicker extends Component {
   static defaultProps = {
-    onPickProp: () => {}
+    onPickProp: () => {},
+    style: {},
+    propImageContainerStyle: {},
+    propImageStyle: {}
   };
 
   state = {
@@ -15,34 +18,45 @@ class PropPicker extends Component {
     this.props.onPickProp(selectedProp);
   };
 
-  renderPropImages() {
-    return Images.props.map((image, index) => {
-      return (
-        <TouchableOpacity key={index} onPress={() => this.selectProp(image)}>
-          <Image source={image} style={styles.prop} resizeMode="contain" />
-        </TouchableOpacity>
-      );
-    });
-  }
+  renderPropImage = ({ item }) => {
+    return (
+      <TouchableOpacity
+        style={[styles.propContainer, this.props.propImageContainerStyle]}
+        onPress={() => this.selectProp(item)}
+      >
+        <Image
+          source={item}
+          style={[styles.prop, this.props.propImageStyle]}
+          resizeMode="contain"
+        />
+      </TouchableOpacity>
+    );
+  };
 
   render() {
     return (
-      <ScrollView contentContainerStyle={[styles.container, this.props.style]}>
-        {this.renderPropImages()}
-      </ScrollView>
+      <FlatList
+        contentContainerStyle={[styles.container, this.props.style]}
+        data={Images.props}
+        renderItem={this.renderPropImage}
+        horizontal={true}
+        keyExtractor={item => item}
+      />
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    flexWrap: 'wrap'
+    padding: 10
   },
   prop: {
     width: 80,
-    height: 80,
+    height: 80
+  },
+  propContainer: {
+    backgroundColor: 'white',
+    padding: 4,
     margin: 4
   }
 });
