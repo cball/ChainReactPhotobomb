@@ -12,12 +12,14 @@ import styles from './Styles/HomeScreenStyles';
 import { Images, Colors, Metrics } from '../Themes';
 import Button from '../Components/Button';
 import { gql, graphql } from 'react-apollo';
+import ZoomImage from 'react-native-zoom-image';
 
-const allPhotosQuery = gql`
+export const allPhotosQuery = gql`
   query {
     allPhotos(orderBy: createdAt_DESC) {
       id
       file {
+        id
         url
       }
     }
@@ -35,6 +37,7 @@ const photosSubscription = gql`
       node {
         id
         file {
+          id
           url
         }
       }
@@ -60,73 +63,89 @@ class HomeScreen extends Component {
   }
 
   refreshCollection = async () => {
+    const { allPhotosQuery } = this.props;
+
     this.setState({ refreshing: true });
-    await this.props.allPhotosQuery.refetch();
+    await allPhotosQuery.refetch();
     this.setState({ refreshing: false });
   };
 
-  renderPhotos() {
-    let { loading, error, allPhotos } = this.props.allPhotosQuery;
-    let { refreshing } = this.state;
-
+  renderError() {
     // TODO: move this to a non-intrusive banner
-    if (error) {
-      return (
-        <View style={styles.contentWrapper}>
-          <Image source={Images.portland} style={styles.backgroundImage} />
-          <Text>ERR>R</Text>
-        </View>
-      );
-    }
+    return <Text>ERR>R</Text>;
+  }
 
-    if (loading && !refreshing) {
-      return (
-        <View style={styles.contentWrapper}>
-          <Image source={Images.portland} style={styles.backgroundImage} />
-          <Image source={Images.logo} style={styles.logo} />
-          <Text style={styles.appName}>Photobomb!</Text>
-        </View>
-      );
-    }
-
-    // TODO: this delays things just enough to show a recently taken photo.
-    // find a better workaround.
-    console.log(allPhotos.length);
-
+  renderLoading() {
     return (
-      <View style={styles.contentWrapper}>
-        <Image source={Images.portland} style={styles.backgroundImage} />
-        <FlatList
-          numColumns="4"
-          contentContainerStyle={styles.photoList}
-          data={allPhotos}
-          renderItem={this.renderPhoto}
-          keyExtractor={item => item.id}
-          onRefresh={this.refreshCollection}
-          refreshing={refreshing}
-        />
+      <View style={{ alignItems: 'center' }}>
+        <Image source={Images.logo} style={styles.logo} />
+        <Text style={styles.appName}>Photobomb!</Text>
       </View>
     );
   }
 
-  renderPhoto({ item }) {
-    const uri = `${item.file.url.replace('files', 'images')}/300x300`;
+  renderPhotoList() {
+    const { allPhotos } = this.props.allPhotosQuery;
+    const { refreshing } = this.state;
 
     return (
-      <Image
-        key={item.id}
-        source={{ uri }}
-        style={{ width: PHOTO_SIZE, height: PHOTO_SIZE, margin: PHOTO_MARGIN }}
+      <FlatList
+        numColumns="4"
+        contentContainerStyle={styles.photoList}
+        data={allPhotos}
+        renderItem={this.renderPhoto}
+        keyExtractor={item => item.id}
+        onRefresh={this.refreshCollection}
+        refreshing={refreshing}
       />
     );
   }
 
+  renderPhotos() {
+    const { loading, error } = this.props.allPhotosQuery;
+    const { refreshing } = this.state;
+    const shouldRenderLoading = !error && loading && !refreshing;
+    const shouldRenderPhotoList = !error && !shouldRenderLoading;
+
+    return (
+      <View style={styles.contentWrapper}>
+        <Image source={Images.portland} style={styles.backgroundImage} />
+        {error && this.renderError()}
+        {shouldRenderLoading && this.renderLoading()}
+        {shouldRenderPhotoList && this.renderPhotoList()}
+      </View>
+    );
+  }
+
+  loadPhoto(photo) {
+    this.props.navigation.navigate('PhotoDetailScreen', { photo });
+  }
+
+  renderPhoto = ({ item }) => {
+    const { id, file } = item;
+    const imagePath = file.url.replace('files', 'images');
+    // get smallest size possible accounting for 2x dpi
+    const roundedSize = Math.ceil(PHOTO_SIZE) * 2;
+    const uri = `${imagePath}/${roundedSize}x${roundedSize}`;
+
+    return (
+      <TouchableOpacity key={id} onPress={() => this.loadPhoto(item)}>
+        <Image
+          source={{ uri }}
+          style={{
+            width: PHOTO_SIZE,
+            height: PHOTO_SIZE,
+            margin: PHOTO_MARGIN
+          }}
+        />
+      </TouchableOpacity>
+    );
+  };
+
   render() {
     return (
       <View style={styles.container}>
-
         {this.renderPhotos()}
-
         <View style={styles.cameraBar} />
 
         <TouchableHighlight
