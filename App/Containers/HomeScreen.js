@@ -12,7 +12,7 @@ import styles from './Styles/HomeScreenStyles';
 import { Images, Colors, Metrics } from '../Themes';
 import Button from '../Components/Button';
 import { gql, graphql } from 'react-apollo';
-import ZoomImage from 'react-native-zoom-image';
+import ImagePicker from 'react-native-image-picker';
 
 export const allPhotosQuery = gql`
   query {
@@ -68,6 +68,33 @@ class HomeScreen extends Component {
     this.setState({ refreshing: true });
     await allPhotosQuery.refetch();
     this.setState({ refreshing: false });
+  };
+
+  collectPicture = () => {
+    const options = {
+      title: 'Choose your Photobomb',
+      mediaType: 'photo',
+      allowsEditing: false,
+      storageOptions: {
+        skipBackup: true,
+        cameraRoll: false,
+        noData: true
+      }
+    };
+
+    ImagePicker.showImagePicker(options, this.handleImagePickerResponse);
+  };
+
+  handleImagePickerResponse = response => {
+    if (response.didCancel) {
+      console.log('User cancelled photo picker');
+      return;
+    } else if (response.error) {
+      console.log('ImagePicker Error: ', response.error);
+      return;
+    }
+
+    this.props.navigation.navigate('CameraScreen', response);
   };
 
   renderError() {
@@ -151,7 +178,7 @@ class HomeScreen extends Component {
         <TouchableHighlight
           underlayColor={Colors.darkPurple}
           style={styles.cameraButton}
-          onPress={() => this.props.navigation.navigate('CameraScreen')}
+          onPress={this.collectPicture}
         >
           <Text style={{ color: '#fff', fontSize: 24 }}>
             [O]
