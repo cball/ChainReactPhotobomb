@@ -56,6 +56,6 @@
 	<string>How are we supposed to take photos if we can't use your camera?</string>
 
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Allows adding photos to the Photostream from your camera roll.</string>
+	<string>Allows adding photobombs from your camera roll.</string>
 </dict>
 </plist>

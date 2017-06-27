@@ -1,16 +1,5 @@
 import React, { Component } from 'react';
-import {
-  View,
-  StatusBar,
-  Text,
-  TouchableOpacity,
-  Modal,
-  Image,
-  PanResponder,
-  Dimensions
-} from 'react-native';
-import ReactNativeCamera from 'react-native-camera';
-import Camera from '../Components/Camera';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 import Button from '../Components/Button';
 import styles from './Styles/CameraScreenStyles';
 import { gql, graphql } from 'react-apollo';
@@ -27,13 +16,6 @@ class CameraScreen extends Component {
     isShowingPreview: false,
     isUploading: false,
     propImages: []
-  };
-
-  /**
-   * Closes the preview modal.
-   */
-  closePreview = () => {
-    this.setState({ isShowingPreview: false });
   };
 
   /**
@@ -67,7 +49,7 @@ class CameraScreen extends Component {
       const image = await uploadPhoto(compositePicture || currentPicture);
 
       await this.props.createPhoto({
-        refetchQueries: [{ query: allPhotosQuery }],
+        // refetchQueries: [{ query: allPhotosQuery }],
         variables: {
           fileId: image.id
         }
@@ -81,19 +63,9 @@ class CameraScreen extends Component {
     }
   };
 
-  componentWillUnmount() {
-    this.camera = null;
-    this.imageComponent = null;
-  }
-
-  setCurrentPicture = currentPicture => {
-    this.setState({ currentPicture, isShowingPreview: true });
-  };
-
-  takePicture = () => {
-    this.camera.takePicture();
-  };
-
+  /**
+   * Adds a single prop image to the top of the stack.
+   */
   addPropToPicture = propImage => {
     const propImages = [...this.state.propImages, propImage];
 
@@ -114,58 +86,39 @@ class CameraScreen extends Component {
 
   render() {
     const { navigation } = this.props;
+    const { uri } = navigation.state.params;
 
     return (
-      <View style={styles.container}>
-        <Camera
-          ref={cam => (this.camera = cam)}
-          onPicture={this.setCurrentPicture}
-          onClose={() => this.props.navigation.goBack()}
-        />
-        <View style={styles.shutterControls}>
-          <TouchableOpacity
-            style={styles.cameraShutter}
-            onPress={this.takePicture}
-          />
+      <View style={{ flex: 1, backgroundColor: Colors.darkPurple }}>
+        <View
+          style={{ flex: 2 }}
+          collapsable={false}
+          ref={i => (this.imageComponent = i)}
+        >
+          <Image style={{ height: '100%' }} source={{ uri }}>
+            {this.renderPropImages()}
+          </Image>
+        </View>
+        <View style={{ height: 160 }}>
+          <Text style={styles.addPropText}>
+            Add props to your image!
+          </Text>
+
+          <PropPicker onPickProp={this.addPropToPicture} />
         </View>
 
-        <Modal visible={this.state.isShowingPreview} onRequestClose={() => {}}>
-          {this.state.currentPicture.path &&
-            <View style={{ flex: 1, backgroundColor: Colors.darkPurple }}>
-              <View
-                style={{ flex: 2 }}
-                collapsable={false}
-                ref={i => (this.imageComponent = i)}
-              >
-                <Image
-                  style={{ height: '100%' }}
-                  source={{ uri: this.state.currentPicture.path }}
-                >
-                  {this.renderPropImages()}
-                </Image>
-              </View>
-              <View style={{ height: 160 }}>
-                <Text style={styles.addPropText}>
-                  Add props to your image!
-                </Text>
-
-                <PropPicker onPickProp={this.addPropToPicture} />
-              </View>
-
-              <View style={styles.uploadButtonContainer}>
-                <Button
-                  text={this.state.isUploading ? 'Uploading...' : 'Upload'}
-                  onPress={this.uploadPicture}
-                />
-              </View>
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={this.closePreview}
-              >
-                <Text style={styles.closeButtonText}>[Back]</Text>
-              </TouchableOpacity>
-            </View>}
-        </Modal>
+        <View style={styles.uploadButtonContainer}>
+          <Button
+            text={this.state.isUploading ? 'Uploading...' : 'Upload'}
+            onPress={this.uploadPicture}
+          />
+        </View>
+        <TouchableOpacity
+          style={styles.closeButton}
+          onPress={this.closePreview}
+        >
+          <Text style={styles.closeButtonText}>[Back]</Text>
+        </TouchableOpacity>
       </View>
     );
   }
