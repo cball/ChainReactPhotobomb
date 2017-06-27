@@ -13,6 +13,7 @@ import { Images, Colors, Metrics } from '../Themes';
 import Button from '../Components/Button';
 import { gql, graphql } from 'react-apollo';
 import ImagePicker from 'react-native-image-picker';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export const allPhotosQuery = gql`
   query {
@@ -87,10 +88,8 @@ class HomeScreen extends Component {
 
   handleImagePickerResponse = response => {
     if (response.didCancel) {
-      console.log('User cancelled photo picker');
       return;
     } else if (response.error) {
-      console.log('ImagePicker Error: ', response.error);
       return;
     }
 
@@ -180,9 +179,7 @@ class HomeScreen extends Component {
           style={styles.cameraButton}
           onPress={this.collectPicture}
         >
-          <Text style={{ color: '#fff', fontSize: 24 }}>
-            [O]
-          </Text>
+          <Icon name="photo-camera" style={styles.cameraIcon} />
         </TouchableHighlight>
       </View>
     );

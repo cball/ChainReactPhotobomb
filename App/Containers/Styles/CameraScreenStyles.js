@@ -3,22 +3,17 @@ import { ApplicationStyles, Colors, Fonts } from '../../Themes';
 
 export default StyleSheet.create({
   container: {
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.darkPurple,
     flex: 1
   },
-  cameraShutter: {
-    backgroundColor: '#fff',
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    borderColor: '#ccc',
-    borderWidth: 10
+  imageContainer: {
+    flex: 2
   },
-  shutterControls: {
-    backgroundColor: 'white',
-    height: '25%',
-    alignItems: 'center',
-    justifyContent: 'center'
+  image: {
+    height: '100%'
+  },
+  propContainer: {
+    height: 160
   },
   addPropText: {
     fontSize: 18,
@@ -32,11 +27,28 @@ export default StyleSheet.create({
   },
   closeButton: {
     position: 'absolute',
-    top: 20,
+    top: 10,
     left: 10,
-    backgroundColor: Colors.transparent
+    right: 10,
+    backgroundColor: Colors.transparent,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
   closeButtonText: {
-    color: Colors.white
+    color: Colors.white,
+    fontSize: 24,
+    textShadowColor: 'rgba(0, 0, 0, 0.4)',
+    textShadowOffset: { width: 1, height: 1 }
+  },
+  clearPropsLink: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  clearPropsText: {
+    color: Colors.white,
+    fontSize: 18,
+    textShadowColor: 'rgba(0, 0, 0, 0.4)',
+    textShadowOffset: { width: 1, height: 1 },
+    marginLeft: 5
   }
 });

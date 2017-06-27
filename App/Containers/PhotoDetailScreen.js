@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, Image, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import styles from './Styles/PhotoDetailScreenStyles';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 class PhotoDetailScreen extends Component {
   state = {
@@ -28,9 +29,12 @@ class PhotoDetailScreen extends Component {
 
         {isLoading && this.renderLoading()}
 
-        <Text onPress={() => navigation.goBack(null)} style={styles.close}>
-          X
-        </Text>
+        <TouchableOpacity
+          onPress={() => navigation.goBack(null)}
+          style={styles.close}
+        >
+          <Icon name="close" style={styles.closeIcon} />
+        </TouchableOpacity>
       </View>
     );
   }
