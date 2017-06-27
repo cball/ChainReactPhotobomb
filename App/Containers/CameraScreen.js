@@ -19,6 +19,7 @@ import PropPicker from '../Components/PropPicker';
 import TransformableImage from '../Components/TransformableImage';
 import { takeSnapshot } from 'react-native-view-shot';
 import { Colors } from '../Themes';
+import { allPhotosQuery } from './HomeScreen';
 
 class CameraScreen extends Component {
   state = {
@@ -66,6 +67,7 @@ class CameraScreen extends Component {
       const image = await uploadPhoto(compositePicture || currentPicture);
 
       await this.props.createPhoto({
+        refetchQueries: [{ query: allPhotosQuery }],
         variables: {
           fileId: image.id
         }
