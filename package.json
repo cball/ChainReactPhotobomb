@@ -12,6 +12,7 @@
 		"react-native": "0.44.2",
 		"react-native-gesture-responder": "^0.1.1",
 		"react-native-image-picker": "^0.26.3",
+		"react-native-vector-icons": "^4.2.0",
 		"react-native-view-shot": "^1.9.1",
 		"react-navigation": "^1.0.0-beta.11",
 		"subscriptions-transport-ws": "^0.6.0"

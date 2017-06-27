@@ -41,7 +41,7 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderTopColor: Colors.darkPurple,
-    borderTopWidth: 2
+    borderTopWidth: 3
   },
   cameraButton: {
     backgroundColor: Colors.purple,
@@ -53,5 +53,9 @@ export default StyleSheet.create({
     left: Metrics.screenWidth / 2 - 30,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  cameraIcon: {
+    color: Colors.white,
+    fontSize: 34
   }
 });

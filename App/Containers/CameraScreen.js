@@ -9,6 +9,7 @@ import TransformableImage from '../Components/TransformableImage';
 import { takeSnapshot } from 'react-native-view-shot';
 import { Colors } from '../Themes';
 import { allPhotosQuery } from './HomeScreen';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 class CameraScreen extends Component {
   state = {
@@ -32,7 +33,7 @@ class CameraScreen extends Component {
 
       return { path };
     } catch (e) {
-      console.error('Oops, snapshot failed. using photo without props', error);
+      // TODO: show nice message
     }
   };
 
@@ -63,6 +64,11 @@ class CameraScreen extends Component {
     }
   };
 
+  cancelPhotoUpload = () => {
+    const { navigation } = this.props;
+    navigation.goBack(null);
+  };
+
   /**
    * Adds a single prop image to the top of the stack.
    */
@@ -70,6 +76,13 @@ class CameraScreen extends Component {
     const propImages = [...this.state.propImages, propImage];
 
     this.setState({ propImages });
+  };
+
+  /**
+   * Clears all prop images from the current image.
+   */
+  clearProps = () => {
+    this.setState({ propImages: [] });
   };
 
   renderPropImages = () => {
@@ -84,22 +97,47 @@ class CameraScreen extends Component {
     });
   };
 
+  renderTopControls = () => {
+    return (
+      <View style={styles.closeButton}>
+        <TouchableOpacity onPress={this.cancelPhotoUpload}>
+          <Icon name="arrow-back" style={styles.closeButtonText} />
+        </TouchableOpacity>
+
+        {this.renderClearLink()}
+      </View>
+    );
+  };
+
+  renderClearLink = () => {
+    const hasPropImages = this.state.propImages.length > 0;
+    if (!hasPropImages) return;
+
+    return (
+      <TouchableOpacity onPress={this.clearProps} style={styles.clearPropsLink}>
+        <Icon name="do-not-disturb" style={styles.closeButtonText} />
+        <Text style={styles.clearPropsText}>Clear</Text>
+      </TouchableOpacity>
+    );
+  };
+
   render() {
     const { navigation } = this.props;
     const { uri } = navigation.state.params;
 
     return (
-      <View style={{ flex: 1, backgroundColor: Colors.darkPurple }}>
+      <View style={styles.container}>
         <View
-          style={{ flex: 2 }}
+          style={styles.imageContainer}
           collapsable={false}
           ref={i => (this.imageComponent = i)}
         >
-          <Image style={{ height: '100%' }} source={{ uri }}>
+          <Image style={styles.image} source={{ uri }}>
             {this.renderPropImages()}
           </Image>
         </View>
-        <View style={{ height: 160 }}>
+
+        <View style={styles.propContainer}>
           <Text style={styles.addPropText}>
             Add props to your image!
           </Text>
@@ -113,12 +151,8 @@ class CameraScreen extends Component {
             onPress={this.uploadPicture}
           />
         </View>
-        <TouchableOpacity
-          style={styles.closeButton}
-          onPress={this.closePreview}
-        >
-          <Text style={styles.closeButtonText}>[Back]</Text>
-        </TouchableOpacity>
+
+        {this.renderTopControls()}
       </View>
     );
   }
