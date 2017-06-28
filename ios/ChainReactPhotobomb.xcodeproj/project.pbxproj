@@ -670,6 +670,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = L29P89N9U3;
 						ProvisioningStyle = Manual;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
@@ -1164,7 +1165,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = L29P89N9U3;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-view-shot/ios",
@@ -1180,6 +1181,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.echobind.chainreactphotobomb;
 				PRODUCT_NAME = ChainReactPhotobomb;
+				PROVISIONING_PROFILE = "2d36999b-e9a0-402c-93a2-4c76fb8b5084";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development com.echobind.chainreactphotobomb";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1191,7 +1194,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = L29P89N9U3;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-view-shot/ios",
@@ -1207,6 +1210,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.echobind.chainreactphotobomb;
 				PRODUCT_NAME = ChainReactPhotobomb;
+				PROVISIONING_PROFILE = "1cbc379b-4979-47c2-a7b5-827c731614d6";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.echobind.chainreactphotobomb";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
