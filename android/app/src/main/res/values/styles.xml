@@ -1,8 +1,10 @@
 <resources>
+    <color name="darkPurple">#2F1843</color>
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
+        <item name="android:windowBackground">@color/darkPurple</item>
     </style>
 
 </resources>
