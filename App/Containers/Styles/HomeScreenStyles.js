@@ -45,9 +45,9 @@ export default StyleSheet.create({
   },
   cameraButton: {
     backgroundColor: Colors.purple,
-    height: 64,
-    width: 64,
-    borderRadius: 32,
+    height: 74,
+    width: 74,
+    borderRadius: 37,
     position: 'absolute',
     bottom: -9,
     left: Metrics.screenWidth / 2 - 30,
@@ -56,6 +56,6 @@ export default StyleSheet.create({
   },
   cameraIcon: {
     color: Colors.white,
-    fontSize: 34
+    fontSize: 38
   }
 });
