@@ -98,12 +98,12 @@ android {
     }
     signingConfigs {
         release {
-            def props = new Properties()
-            props.load(new FileInputStream(project.file("../keystores/release.keystore.properties")))
-            storeFile project.file("../keystores/" + props['key.store'])
-            storePassword props['key.store.password']
-            keyAlias props['key.alias']
-            keyPassword props['key.alias.password']
+            if (project.hasProperty('PHOTOBOMB_RELEASE_STORE_FILE')) {
+                storeFile file(PHOTOBOMB_RELEASE_STORE_FILE)
+                storePassword PHOTOBOMB_RELEASE_STORE_PASSWORD
+                keyAlias PHOTOBOMB_RELEASE_KEY_ALIAS
+                keyPassword PHOTOBOMB_RELEASE_KEY_PASSWORD
+            }
         }
     }
     splits {
