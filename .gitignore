@@ -54,3 +54,4 @@ fastlane/screenshots
 
 *.keystore
 release.keystore.properties
+google-play-credentials.json
