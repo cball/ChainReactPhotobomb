@@ -1,4 +1,4 @@
-package com.chainreactphotobomb;
+package com.echobind.chainreactphotobomb;
 
 import android.app.Application;
 
