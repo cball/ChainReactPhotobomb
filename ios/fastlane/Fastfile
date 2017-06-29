@@ -30,6 +30,18 @@ platform :ios do
   desc "Submit a new Beta Build to Apple TestFlight"
   desc "This will also make sure the profile is up to date"
   lane :beta do
+    # bump version number
+    increment_build_number(
+      xcodeproj: "./ChainReactApp.xcodeproj"
+    )
+
+    # Ensure app icons are the latest version.
+    # appicon(
+    #   appicon_image_file: './AppIcon.png',
+    #   appicon_devices: [:ipad, :iphone],
+    #   appicon_path: 'ChainReactPhotobomb/Images.xcassets'
+    # )
+
     # match(type: "appstore") # more information: https://codesigning.guide
     gym(scheme: "ChainReactPhotobomb") # Build your app - more options available
     pilot

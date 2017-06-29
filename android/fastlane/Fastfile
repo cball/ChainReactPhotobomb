@@ -30,6 +30,13 @@ platform :android do
     # Bump version code for uploading
     increment_version_code
 
+    # Ensure app icons are the latest version.
+    # android_appicon(
+    #   appicon_image_file: './AppIcon.png',
+    #   appicon_devices: [:phone, :tablet],
+    #   appicon_path: 'app/src/main/res/mipmap'
+    # )
+
     gradle(task: "assembleRelease")
 
     # Upload to Google Play Beta
