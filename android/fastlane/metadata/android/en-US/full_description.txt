@@ -1,0 +1,3 @@
+Add your conference photos, a few props, and share it with the group!
+
+This app was built to accompany the talk "From Idea to App Store: A guide to shipping React Native apps" by Chris Ball for Chain React 2017.
