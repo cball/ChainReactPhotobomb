@@ -32,7 +32,7 @@ platform :ios do
   lane :beta do
     # bump version number
     increment_build_number(
-      xcodeproj: "./ChainReactApp.xcodeproj"
+      xcodeproj: "./ChainReactPhotobomb.xcodeproj"
     )
 
     # Ensure app icons are the latest version.
