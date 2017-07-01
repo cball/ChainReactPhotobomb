@@ -10,6 +10,7 @@
 		"react": "16.0.0-alpha.6",
 		"react-apollo": "^1.4.2",
 		"react-native": "0.44.2",
+		"react-native-code-push": "^3.0.0-beta",
 		"react-native-gesture-responder": "^0.1.1",
 		"react-native-image-picker": "^0.26.3",
 		"react-native-vector-icons": "^4.2.0",

@@ -1,3 +1,4 @@
 <resources>
+    <string moduleConfig="true" name="reactNativeCodePush_androidDeploymentKey">XAj_zjHbW86aa9M33moHL_peQmIBc9e7968e-be94-43b5-9a17-6e3c6dab1cbb</string>
     <string name="app_name">Photobomb</string>
 </resources>
