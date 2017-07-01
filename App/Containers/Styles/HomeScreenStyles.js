@@ -50,7 +50,7 @@ export default StyleSheet.create({
     borderRadius: 37,
     position: 'absolute',
     bottom: -9,
-    left: Metrics.screenWidth / 2 - 30,
+    left: Metrics.screenWidth / 2 - 37,
     justifyContent: 'center',
     alignItems: 'center'
   },
