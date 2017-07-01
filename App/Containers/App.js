@@ -12,6 +12,10 @@ import {
 } from 'subscriptions-transport-ws';
 import codePush from 'react-native-code-push';
 
+const codePushOptions = {
+  checkFrequency: codePush.CheckFrequency.ON_APP_RESUME
+};
+
 const GRAPHQL_ENDPOINT =
   'https://api.graph.cool/simple/v1/cj3g3v2hp18ag01621354vr2y';
 const GRAPHQL_WEBSOCKET_ENDPOINT =
@@ -39,6 +43,6 @@ class App extends Component {
   }
 }
 
-App = codePush(App);
+App = codePush(codePushOptions)(App);
 
 export default App;
