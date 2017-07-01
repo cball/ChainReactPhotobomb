@@ -26,7 +26,6 @@ const networkInterfaceWithSubscriptions = addGraphQLSubscriptions(
 );
 const client = new ApolloClient({
   networkInterface: networkInterfaceWithSubscriptions
-  // networkInterface
 });
 
 class App extends Component {
