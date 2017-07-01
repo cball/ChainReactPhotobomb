@@ -28,7 +28,7 @@ class CameraScreen extends Component {
     try {
       const path = await takeSnapshot(this.imageComponent, {
         format: 'jpeg',
-        quality: 1
+        quality: 0.9
       });
 
       return { path };

@@ -15,7 +15,7 @@ export default StyleSheet.create({
   },
   closeIcon: {
     color: 'white',
-    fontSize: 24
+    fontSize: 30
   },
   loadingContainer: {
     position: 'absolute',
