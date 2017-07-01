@@ -10,6 +10,7 @@ import {
   SubscriptionClient,
   addGraphQLSubscriptions
 } from 'subscriptions-transport-ws';
+import codePush from 'react-native-code-push';
 
 const GRAPHQL_ENDPOINT =
   'https://api.graph.cool/simple/v1/cj3g3v2hp18ag01621354vr2y';
@@ -37,5 +38,7 @@ class App extends Component {
     );
   }
 }
+
+App = codePush(App);
 
 export default App;
