@@ -57,5 +57,9 @@ export default StyleSheet.create({
   cameraIcon: {
     color: Colors.white,
     fontSize: 38
+  },
+  modalBackground: {
+    ...ApplicationStyles.fullScreen,
+    backgroundColor: Colors.lightPurpleTransparent
   }
 });

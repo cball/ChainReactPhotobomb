@@ -146,10 +146,9 @@ class CameraScreen extends Component {
         </View>
 
         <View style={styles.uploadButtonContainer}>
-          <Button
-            text={this.state.isUploading ? 'Uploading...' : 'Upload'}
-            onPress={this.uploadPicture}
-          />
+          <Button onPress={this.uploadPicture}>
+            {this.state.isUploading ? 'Uploading...' : 'Upload'}
+          </Button>
         </View>
 
         {this.renderTopControls()}

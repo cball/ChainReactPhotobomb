@@ -6,14 +6,16 @@ import {
   Image,
   TouchableOpacity,
   TouchableHighlight,
-  FlatList
+  FlatList,
+  Modal,
+  AsyncStorage
 } from 'react-native';
 import styles from './Styles/HomeScreenStyles';
 import { Images, Colors, Metrics } from '../Themes';
-import Button from '../Components/Button';
 import { gql, graphql } from 'react-apollo';
 import ImagePicker from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import EULA from '../Components/EULA';
 
 export const allPhotosQuery = gql`
   query {
@@ -48,16 +50,26 @@ const photosSubscription = gql`
 
 const PHOTO_MARGIN = 2;
 const PHOTO_SIZE = Metrics.screenWidth / 4 - PHOTO_MARGIN * 3;
+const EULA_STORAGE_KEY = '@Photobomb:EULA';
 
 class HomeScreen extends Component {
   state = {
-    refreshing: false
+    refreshing: false,
+    hasSeenEULA: true
   };
 
   constructor(props) {
     super(props);
     this.subscription = null;
+    this.setHasSeenEULA();
   }
+
+  setHasSeenEULA = async () => {
+    const value = await AsyncStorage.getItem(EULA_STORAGE_KEY);
+    if (!value) {
+      this.setState({ hasSeenEULA: false });
+    }
+  };
 
   componentWillReceiveProps(nextProps) {
     this._subscribeToNewPhotos(nextProps);
@@ -168,7 +180,24 @@ class HomeScreen extends Component {
     );
   };
 
+  agreeToEULA = () => {
+    AsyncStorage.setItem(EULA_STORAGE_KEY, `yep`);
+    this.setState({ hasSeenEULA: true });
+  };
+
+  renderEULA() {
+    return (
+      <View style={styles.modalBackground}>
+        <Modal transparent={true} animationType="slide">
+          <EULA onAgree={this.agreeToEULA} />
+        </Modal>
+      </View>
+    );
+  }
+
   render() {
+    const { hasSeenEULA } = this.state;
+
     return (
       <View style={styles.container}>
         {this.renderPhotos()}
@@ -181,6 +210,8 @@ class HomeScreen extends Component {
         >
           <Icon name="photo-camera" style={styles.cameraIcon} />
         </TouchableHighlight>
+
+        {!hasSeenEULA && this.renderEULA()}
       </View>
     );
   }
