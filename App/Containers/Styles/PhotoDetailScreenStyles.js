@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { Colors } from '../../Themes';
 
 export default StyleSheet.create({
   container: {
@@ -25,5 +26,23 @@ export default StyleSheet.create({
     bottom: 0,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  flag: {
+    position: 'absolute',
+    bottom: 10,
+    left: 0,
+    right: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row'
+  },
+  flagIcon: {
+    color: Colors.lightPurple,
+    fontSize: 20,
+    marginRight: 5
+  },
+  flagText: {
+    color: Colors.lightPurple,
+    fontSize: 10
   }
 });

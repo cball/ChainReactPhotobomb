@@ -16,7 +16,9 @@ class Button extends Component {
         style={styles.buttonContainer}
         onPress={this.props.onPress}
       >
-        <Text style={styles.button}>{this.props.text}</Text>
+        <Text style={[styles.button, this.props.style]}>
+          {this.props.children}
+        </Text>
       </TouchableOpacity>
     );
   }
