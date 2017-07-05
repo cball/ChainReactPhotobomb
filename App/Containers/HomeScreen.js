@@ -19,8 +19,10 @@ import EULA from '../Components/EULA';
 
 export const allPhotosQuery = gql`
   query {
-    allPhotos(orderBy: createdAt_DESC) {
+    allPhotos(filter: { flagged: false }, orderBy: createdAt_DESC) {
       id
+      flagged
+      createdAt
       file {
         id
         url
@@ -33,12 +35,14 @@ const photosSubscription = gql`
   subscription createPhoto {
     Photo(
       filter: {
-        mutation_in: [CREATED]
+        mutation_in: [CREATED, UPDATED]
       }
     ) {
       mutation
       node {
         id
+        flagged
+        createdAt
         file {
           id
           url
@@ -238,7 +242,22 @@ class HomeScreen extends Component {
 }
 
 const prependNewPhotos = (previousState, { subscriptionData }) => {
+  const isUpdate = subscriptionData.data.Photo.mutation === 'UPDATED';
   const newPhoto = subscriptionData.data.Photo.node;
+
+  // Remove the item from the list if it was flagged
+  if (isUpdate && newPhoto.flagged) {
+    const index = previousState.allPhotos.findIndex(p => p.id === newPhoto.id);
+    if (index >= 0) {
+      const allPhotos = [...previousState.allPhotos];
+      allPhotos.splice(index, 1);
+
+      return { allPhotos };
+    }
+    return { allPhotos: previousState.allPhotos };
+  }
+
+  // Otherwise, put it at the beginning
   const allPhotos = [newPhoto, ...previousState.allPhotos];
 
   return {
