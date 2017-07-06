@@ -149,6 +149,10 @@ class HomeScreen extends Component {
     const shouldRenderLoading = !error && loading && !refreshing;
     const shouldRenderPhotoList = !error && !shouldRenderLoading;
 
+    if (error) {
+      debugger;
+    }
+
     return (
       <View style={styles.contentWrapper}>
         <Image source={Images.portland} style={styles.backgroundImage} />
@@ -192,7 +196,11 @@ class HomeScreen extends Component {
   renderEULA() {
     return (
       <View style={styles.modalBackground}>
-        <Modal transparent={true} animationType="slide">
+        <Modal
+          transparent={true}
+          animationType="slide"
+          onRequestClose={() => {}}
+        >
           <EULA onAgree={this.agreeToEULA} />
         </Modal>
       </View>
