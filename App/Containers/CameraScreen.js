@@ -139,7 +139,7 @@ class CameraScreen extends Component {
 
         <View style={styles.propContainer}>
           <Text style={styles.addPropText}>
-            Add props to your image!
+            Add stickers to your image!
           </Text>
 
           <PropPicker onPickProp={this.addPropToPicture} />
